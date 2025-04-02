@@ -1,4 +1,3 @@
-
 export interface TokenConfig {
   name: string;
   symbol: string;
@@ -13,6 +12,8 @@ export interface TokenConfig {
   mintAddress?: string;
 }
 
+export type BondingCurveType = 'constant' | 'linear' | 'exponential' | 'logarithmic' | 'sigmoid' | 'custom';
+
 export interface BondingCurveConfig {
   curveType: 'linear' | 'exponential' | 'sigmoid' | 'custom';
   startPrice: number;
@@ -21,6 +22,9 @@ export interface BondingCurveConfig {
   reserveRatio: number;
   entryTributeFee: number;
   exitTributeFee: number;
+  type: BondingCurveType;
+  initialPrice: number;
+  slope: number;
 }
 
 export interface AllocationConfig {
@@ -42,6 +46,9 @@ export interface VestingSchedule {
   initialUnlock: number;
   vestingInterval: 'daily' | 'weekly' | 'monthly' | 'quarterly';
   description?: string;
+  tgePercentage?: number;
+  cliff?: number;
+  vestingDuration?: number;
 }
 
 export type LaunchpadType = 'standard' | 'fair' | 'private';
@@ -93,7 +100,10 @@ export const defaultBondingCurveConfig: BondingCurveConfig = {
   targetGoal: 500000,
   reserveRatio: 50,
   entryTributeFee: 2,
-  exitTributeFee: 5
+  exitTributeFee: 5,
+  type: 'linear',
+  initialPrice: 0.0001,
+  slope: 0.00001
 };
 
 export const defaultAllocationConfig: AllocationConfig = {
@@ -159,4 +169,43 @@ export const defaultLiquidityConfig: LiquidityConfig = {
   lockingPeriod: 180, // 180 days (6 months)
   targetPriceRatio: 1.5,
   enableAutoListing: true
+};
+
+export const calculatePrice = (bondingCurve: BondingCurveConfig, supply: number): number => {
+  const { type, initialPrice, slope, reserveRatio } = bondingCurve;
+
+  switch (type) {
+    case 'constant':
+      return initialPrice;
+    case 'linear':
+      return initialPrice + (slope * supply);
+    case 'exponential':
+      return initialPrice * Math.exp(slope * supply);
+    case 'logarithmic':
+      return initialPrice * (1 + (slope * Math.log(supply + 1)));
+    case 'sigmoid':
+      const midpoint = supply / 2;
+      const steepness = slope;
+      return initialPrice + (bondingCurve.targetPrice - initialPrice) / (1 + Math.exp(-steepness * (supply - midpoint)));
+    default:
+      return initialPrice;
+  }
+};
+
+export const generateCurvePoints = (bondingCurve: BondingCurveConfig, totalSupply: number): { x: number; y: number }[] => {
+  const points = [];
+  const steps = 50;
+  
+  for (let i = 0; i <= steps; i++) {
+    const supply = (i / steps) * totalSupply;
+    const price = calculatePrice(bondingCurve, supply);
+    points.push({ x: supply, y: price });
+  }
+  
+  return points;
+};
+
+export const validateAllocation = (allocation: AllocationConfig): boolean => {
+  const total = Object.values(allocation).reduce((sum, value) => sum + value, 0);
+  return Math.abs(total - 100) < 0.01; // Allow for small floating point errors
 };

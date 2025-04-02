@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BadgeCheck, Rocket, Shield, Coins, Clock, Users, ChevronRight } from 'lucide-react';
-import { TokenConfig, BondingCurveConfig, AllocationConfig, LaunchpadConfig, calculatePrice } from '@/utils/tokenHelpers';
+import { TokenConfig, BondingCurveConfig, AllocationConfig, LaunchpadConfig, LiquidityConfig, VestingSchedule, calculatePrice } from '@/utils/tokenHelpers';
 import { useToast } from '@/components/ui/use-toast';
 import { format } from 'date-fns';
 
@@ -12,6 +12,8 @@ interface LaunchPreviewProps {
   bondingCurve: BondingCurveConfig;
   allocation: AllocationConfig;
   launchpadConfig: LaunchpadConfig;
+  vestingSchedules: VestingSchedule[];
+  liquidityConfig: LiquidityConfig;
 }
 
 const LaunchPreview: React.FC<LaunchPreviewProps> = ({
@@ -19,6 +21,8 @@ const LaunchPreview: React.FC<LaunchPreviewProps> = ({
   bondingCurve,
   allocation,
   launchpadConfig,
+  vestingSchedules,
+  liquidityConfig,
 }) => {
   const { toast } = useToast();
 

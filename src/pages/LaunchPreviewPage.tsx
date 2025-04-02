@@ -48,6 +48,7 @@ const LaunchPreviewPage = () => {
             bondingCurve={bondingCurve}
             allocation={allocation}
             launchpadConfig={launchpadConfig}
+            vestingSchedules={vestingSchedules}
           />
         </div>
         

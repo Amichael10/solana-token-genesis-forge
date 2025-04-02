@@ -29,7 +29,7 @@ export interface AllocationConfig {
 }
 
 export interface VestingSchedule {
-  category: keyof AllocationConfig;
+  category: string; // Changed from keyof AllocationConfig to string
   tgePercentage: number; // token generation event percentage
   cliff: number; // in months
   vestingDuration: number; // in months

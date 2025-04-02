@@ -15,7 +15,7 @@ interface AllocationChartProps {
 }
 
 const AllocationChart: React.FC<AllocationChartProps> = ({ allocation, onChange }) => {
-  const handleChange = (category: keyof AllocationConfig, value: number) => {
+  const handleChange = (category: string, value: number) => {
     const newAllocation = {
       ...allocation,
       [category]: Math.round(value),
@@ -103,7 +103,7 @@ const AllocationChart: React.FC<AllocationChartProps> = ({ allocation, onChange 
         </div>
         
         <div className="space-y-4 mt-6">
-          {(Object.keys(allocation) as Array<keyof AllocationConfig>).map((category) => (
+          {Object.keys(allocation).map((category) => (
             <div key={category} className="space-y-2">
               <div className="flex justify-between">
                 <Label>

@@ -70,7 +70,7 @@ const VestingSchedule: React.FC<VestingScheduleProps> = ({ vestingSchedules, all
     
     // Create new vesting schedule with default values
     const newSchedule: VestingType = {
-      category: formattedCategory as keyof AllocationConfig,
+      category: formattedCategory,
       tgePercentage: 0,
       cliff: 0,
       vestingDuration: 12,

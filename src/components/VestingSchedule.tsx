@@ -123,73 +123,74 @@ const VestingSchedule: React.FC<VestingScheduleProps> = ({ vestingSchedules, all
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex items-center mb-4">
-          <TabsList className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 flex-grow mr-2">
-            {vestingSchedules.map((schedule) => (
-              <TabsTrigger 
-                key={schedule.category} 
-                value={schedule.category}
-                onClick={() => setActiveTab(schedule.category)}
-                className="flex items-center justify-between"
-              >
-                <span className="truncate">
-                  {schedule.category.charAt(0).toUpperCase() + schedule.category.slice(1).replace(/_/g, ' ')}
-                </span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-5 w-5 ml-1 hover:bg-destructive/20 hover:text-destructive"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeCategory(schedule.category);
-                  }}
+        {/* Wrapping the TabsList within a Tabs component */}
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <div className="flex items-center mb-4">
+            <TabsList className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 flex-grow mr-2">
+              {vestingSchedules.map((schedule) => (
+                <TabsTrigger 
+                  key={schedule.category} 
+                  value={schedule.category}
+                  className="flex items-center justify-between"
                 >
-                  <X className="h-3 w-3" />
+                  <span className="truncate">
+                    {schedule.category.charAt(0).toUpperCase() + schedule.category.slice(1).replace(/_/g, ' ')}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-5 w-5 ml-1 hover:bg-destructive/20 hover:text-destructive"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeCategory(schedule.category);
+                    }}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            
+            <Dialog open={isAddingNew} onOpenChange={setIsAddingNew}>
+              <DialogTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  className="flex-shrink-0"
+                >
+                  <Plus className="h-4 w-4" />
                 </Button>
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          
-          <Dialog open={isAddingNew} onOpenChange={setIsAddingNew}>
-            <DialogTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="icon" 
-                className="flex-shrink-0"
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add New Allocation Category</DialogTitle>
-                <DialogDescription>
-                  Create a custom category for token allocation and vesting.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="py-4">
-                <Label htmlFor="categoryName">Category Name</Label>
-                <Input
-                  id="categoryName"
-                  value={newCategoryName}
-                  onChange={(e) => setNewCategoryName(e.target.value)}
-                  placeholder="e.g., Team, Advisors, Marketing"
-                  className="mt-2"
-                />
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setIsAddingNew(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={addNewCategory}>
-                  Add Category
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add New Allocation Category</DialogTitle>
+                  <DialogDescription>
+                    Create a custom category for token allocation and vesting.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="py-4">
+                  <Label htmlFor="categoryName">Category Name</Label>
+                  <Input
+                    id="categoryName"
+                    value={newCategoryName}
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    placeholder="e.g., Team, Advisors, Marketing"
+                    className="mt-2"
+                  />
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsAddingNew(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={addNewCategory}>
+                    Add Category
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
         
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
+          {/* Content for tabs */}
           {vestingSchedules.map((schedule, index) => {
             const tokenAllocation = allocation[schedule.category] || 0;
             const displayName = schedule.category.charAt(0).toUpperCase() + schedule.category.slice(1).replace(/_/g, ' ');

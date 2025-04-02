@@ -1,5 +1,6 @@
 
 export type BondingCurveType = 'linear' | 'exponential' | 'logarithmic' | 'sigmoid' | 'constant';
+export type LaunchpadType = 'standard' | 'fair' | 'private';
 
 export interface TokenConfig {
   name: string;
@@ -18,6 +19,7 @@ export interface BondingCurveConfig {
 }
 
 export interface AllocationConfig {
+  [key: string]: number;
   team: number;
   advisors: number;
   marketing: number;
@@ -35,11 +37,18 @@ export interface VestingSchedule {
 }
 
 export interface LaunchpadConfig {
+  type: LaunchpadType;
   launchDate: Date;
   softCap: number;
   hardCap: number;
   minContribution: number;
   maxContribution: number;
+  fixedTokenPrice?: number;
+  saleAmount?: number;
+  saleDuration?: number;
+  minAllocation?: number;
+  maxAllocation?: number;
+  whitelistSize?: number;
   whitelisted: boolean;
 }
 
@@ -78,11 +87,18 @@ export const defaultVestingSchedules: VestingSchedule[] = [
 ];
 
 export const defaultLaunchpadConfig: LaunchpadConfig = {
+  type: 'standard',
   launchDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // one week from now
   softCap: 100000,
   hardCap: 500000,
   minContribution: 100,
   maxContribution: 10000,
+  fixedTokenPrice: 0.05,
+  saleAmount: 200000, 
+  saleDuration: 24,
+  minAllocation: 500,
+  maxAllocation: 5000,
+  whitelistSize: 100,
   whitelisted: false,
 };
 

@@ -1,13 +1,16 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AllocationConfig, VestingSchedule as VestingType } from '@/utils/tokenHelpers';
-import { Clock } from 'lucide-react';
+import { Clock, Plus, X } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/components/ui/use-toast';
 
 interface VestingScheduleProps {
   vestingSchedules: VestingType[];
@@ -23,6 +26,11 @@ const INTERVAL_OPTIONS = [
 ];
 
 const VestingSchedule: React.FC<VestingScheduleProps> = ({ vestingSchedules, allocation, onChange }) => {
+  const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState<string>(vestingSchedules[0]?.category || 'default');
+  const [isAddingNew, setIsAddingNew] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+
   const handleChange = (index: number, field: keyof VestingType, value: any) => {
     const newSchedules = [...vestingSchedules];
     newSchedules[index] = {
@@ -30,6 +38,77 @@ const VestingSchedule: React.FC<VestingScheduleProps> = ({ vestingSchedules, all
       [field]: typeof value === 'string' ? value : Number(value),
     };
     onChange(newSchedules);
+  };
+
+  const addNewCategory = () => {
+    // Convert to lowercase and replace spaces with underscores
+    const formattedCategory = newCategoryName.toLowerCase().replace(/\s+/g, '_');
+    
+    if (!formattedCategory || formattedCategory.trim() === '') {
+      toast({
+        title: "Invalid Category Name",
+        description: "Please provide a valid category name.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (vestingSchedules.some(schedule => schedule.category === formattedCategory)) {
+      toast({
+        title: "Category Already Exists",
+        description: "A category with this name already exists.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Create new allocation with the new category
+    const newAllocation: AllocationConfig = {
+      ...allocation,
+      [formattedCategory]: 0,
+    };
+    
+    // Create new vesting schedule with default values
+    const newSchedule: VestingType = {
+      category: formattedCategory as keyof AllocationConfig,
+      tgePercentage: 0,
+      cliff: 0,
+      vestingDuration: 12,
+      vestingInterval: 'monthly',
+    };
+    
+    onChange([...vestingSchedules, newSchedule]);
+    setNewCategoryName('');
+    setIsAddingNew(false);
+    setActiveTab(formattedCategory);
+    
+    toast({
+      title: "Category Added",
+      description: `${newCategoryName} category has been added.`,
+    });
+  };
+
+  const removeCategory = (categoryToRemove: string) => {
+    if (vestingSchedules.length <= 1) {
+      toast({
+        title: "Cannot Remove",
+        description: "You must have at least one category.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    const newSchedules = vestingSchedules.filter(
+      schedule => schedule.category !== categoryToRemove
+    );
+    
+    onChange(newSchedules);
+    setActiveTab(newSchedules[0].category);
+    
+    toast({
+      title: "Category Removed",
+      description: `${categoryToRemove} category has been removed.`,
+    });
   };
 
   return (
@@ -40,21 +119,80 @@ const VestingSchedule: React.FC<VestingScheduleProps> = ({ vestingSchedules, all
           <span>Vesting Schedule</span>
         </CardTitle>
         <CardDescription>
-          Define release schedules for each allocation category
+          Define custom release schedules for each allocation category
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue={vestingSchedules[0].category}>
-          <TabsList className="grid grid-cols-3 md:grid-cols-6 mb-4">
+        <div className="flex items-center mb-4">
+          <TabsList className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 flex-grow mr-2">
             {vestingSchedules.map((schedule) => (
-              <TabsTrigger key={schedule.category} value={schedule.category}>
-                {schedule.category.charAt(0).toUpperCase() + schedule.category.slice(1)}
+              <TabsTrigger 
+                key={schedule.category} 
+                value={schedule.category}
+                onClick={() => setActiveTab(schedule.category)}
+                className="flex items-center justify-between"
+              >
+                <span className="truncate">
+                  {schedule.category.charAt(0).toUpperCase() + schedule.category.slice(1).replace(/_/g, ' ')}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-5 w-5 ml-1 hover:bg-destructive/20 hover:text-destructive"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeCategory(schedule.category);
+                  }}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
               </TabsTrigger>
             ))}
           </TabsList>
           
+          <Dialog open={isAddingNew} onOpenChange={setIsAddingNew}>
+            <DialogTrigger asChild>
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="flex-shrink-0"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add New Allocation Category</DialogTitle>
+                <DialogDescription>
+                  Create a custom category for token allocation and vesting.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="py-4">
+                <Label htmlFor="categoryName">Category Name</Label>
+                <Input
+                  id="categoryName"
+                  value={newCategoryName}
+                  onChange={(e) => setNewCategoryName(e.target.value)}
+                  placeholder="e.g., Team, Advisors, Marketing"
+                  className="mt-2"
+                />
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsAddingNew(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={addNewCategory}>
+                  Add Category
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+        
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
           {vestingSchedules.map((schedule, index) => {
-            const tokenAmount = (allocation[schedule.category] / 100);
+            const tokenAllocation = allocation[schedule.category] || 0;
+            const displayName = schedule.category.charAt(0).toUpperCase() + schedule.category.slice(1).replace(/_/g, ' ');
             
             return (
               <TabsContent key={schedule.category} value={schedule.category} className="space-y-6">
@@ -130,15 +268,15 @@ const VestingSchedule: React.FC<VestingScheduleProps> = ({ vestingSchedules, all
                 </div>
                 
                 <div className="glass-panel p-4 rounded-lg space-y-2">
-                  <h3 className="text-sm font-medium">Summary</h3>
+                  <h3 className="text-sm font-medium">{displayName} Vesting Summary</h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-xs text-muted-foreground">Allocation</p>
-                      <p className="text-sm">{allocation[schedule.category]}% of total supply</p>
+                      <p className="text-sm">{tokenAllocation}% of total supply</p>
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground">TGE Release</p>
-                      <p className="text-sm">{(tokenAmount * schedule.tgePercentage / 100).toFixed(2)}% of total supply</p>
+                      <p className="text-sm">{(tokenAllocation * schedule.tgePercentage / 100).toFixed(2)}% of total supply</p>
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground">Vesting Start</p>

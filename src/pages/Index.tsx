@@ -7,21 +7,24 @@ import BondingCurve from '@/components/BondingCurve';
 import AllocationChart from '@/components/AllocationChart';
 import VestingSchedule from '@/components/VestingSchedule';
 import LaunchpadSettings from '@/components/LaunchpadSettings';
+import LiquiditySettings from '@/components/LiquiditySettings';
 import { 
   defaultTokenConfig, 
   defaultBondingCurveConfig,
   defaultAllocationConfig,
   defaultVestingSchedules,
   defaultLaunchpadConfig,
+  defaultLiquidityConfig,
   TokenConfig,
   BondingCurveConfig,
   AllocationConfig,
   VestingSchedule as VestingType,
   LaunchpadConfig,
+  LiquidityConfig,
 } from '@/utils/tokenHelpers';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight, Rocket, Gem, Layout, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Rocket, Gem, Layout, Sparkles, SwapIcon } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -31,8 +34,9 @@ const Index = () => {
   const [allocation, setAllocation] = useState<AllocationConfig>(defaultAllocationConfig);
   const [vestingSchedules, setVestingSchedules] = useState<VestingType[]>(defaultVestingSchedules);
   const [launchpadConfig, setLaunchpadConfig] = useState<LaunchpadConfig>(defaultLaunchpadConfig);
+  const [liquidityConfig, setLiquidityConfig] = useState<LiquidityConfig>(defaultLiquidityConfig);
 
-  const totalSteps = 5;
+  const totalSteps = 6;
 
   const goToNextStep = () => {
     if (currentStep < totalSteps) {
@@ -45,7 +49,8 @@ const Index = () => {
           bondingCurve,
           allocation,
           vestingSchedules,
-          launchpadConfig
+          launchpadConfig,
+          liquidityConfig
         }
       });
     }
@@ -98,6 +103,7 @@ const Index = () => {
             <span>Bonding Curve</span>
             <span>Allocation</span>
             <span>Vesting</span>
+            <span>Liquidity</span>
             <span>Launchpad</span>
           </div>
         </div>
@@ -133,8 +139,15 @@ const Index = () => {
               onChange={setVestingSchedules} 
             />
           )}
-          
+
           {currentStep === 5 && (
+            <LiquiditySettings
+              liquidityConfig={liquidityConfig}
+              onChange={setLiquidityConfig}
+            />
+          )}
+          
+          {currentStep === 6 && (
             <LaunchpadSettings 
               launchpadConfig={launchpadConfig} 
               onChange={setLaunchpadConfig} 

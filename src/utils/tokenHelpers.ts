@@ -1,40 +1,50 @@
 
-export type BondingCurveType = 'linear' | 'exponential' | 'logarithmic' | 'sigmoid' | 'constant';
-export type LaunchpadType = 'standard' | 'fair' | 'private';
-
 export interface TokenConfig {
   name: string;
   symbol: string;
+  logoUrl: string;
+  description: string;
   totalSupply: number;
   decimals: number;
-  description: string;
-  logoUrl: string;
+  website: string;
+  twitter: string;
+  telegram: string;
+  discord: string;
+  mintAddress?: string;
 }
 
 export interface BondingCurveConfig {
-  type: BondingCurveType;
-  initialPrice: number;
-  slope: number;
-  reserveRatio?: number;
+  curveType: 'linear' | 'exponential' | 'sigmoid' | 'custom';
+  startPrice: number;
+  targetPrice: number;
+  targetGoal: number;
+  reserveRatio: number;
+  entryTributeFee: number;
+  exitTributeFee: number;
 }
 
 export interface AllocationConfig {
-  [key: string]: number;
-  team: number;
-  advisors: number;
-  marketing: number;
+  presale: number;
   publicSale: number;
-  treasury: number;
+  team: number;
+  marketing: number;
+  development: number;
+  reserve: number;
+  advisory: number;
   ecosystem: number;
 }
 
 export interface VestingSchedule {
-  category: string; // Changed from keyof AllocationConfig to string
-  tgePercentage: number; // token generation event percentage
-  cliff: number; // in months
-  vestingDuration: number; // in months
-  vestingInterval: string; // 'daily', 'weekly', 'monthly'
+  id: string;
+  category: keyof AllocationConfig;
+  cliffPeriod: number;
+  vestingPeriod: number;
+  initialUnlock: number;
+  vestingInterval: 'daily' | 'weekly' | 'monthly' | 'quarterly';
+  description?: string;
 }
+
+export type LaunchpadType = 'standard' | 'fair' | 'private';
 
 export interface LaunchpadConfig {
   type: LaunchpadType;
@@ -43,99 +53,110 @@ export interface LaunchpadConfig {
   hardCap: number;
   minContribution: number;
   maxContribution: number;
+  whitelisted: boolean;
+  whitelistSize?: number;
   fixedTokenPrice?: number;
   saleAmount?: number;
   saleDuration?: number;
   minAllocation?: number;
   maxAllocation?: number;
-  whitelistSize?: number;
-  whitelisted: boolean;
+}
+
+export type DexType = 'pumpswap' | 'meteora' | 'raydium' | 'orca' | 'custom';
+
+export interface LiquidityConfig {
+  dex: DexType;
+  customDexName?: string;
+  initialLiquidityPercentage: number;
+  lockingPeriod: number;
+  targetPriceRatio: number;
+  enableAutoListing: boolean;
 }
 
 export const defaultTokenConfig: TokenConfig = {
   name: '',
   symbol: '',
-  totalSupply: 1000000,
-  decimals: 9,
-  description: '',
   logoUrl: '',
+  description: '',
+  totalSupply: 1000000000,
+  decimals: 9,
+  website: '',
+  twitter: '',
+  telegram: '',
+  discord: ''
 };
 
 export const defaultBondingCurveConfig: BondingCurveConfig = {
-  type: 'linear',
-  initialPrice: 0.01,
-  slope: 0.01,
-  reserveRatio: 0.2,
+  curveType: 'linear',
+  startPrice: 0.0001,
+  targetPrice: 0.001,
+  targetGoal: 500000,
+  reserveRatio: 50,
+  entryTributeFee: 2,
+  exitTributeFee: 5
 };
 
 export const defaultAllocationConfig: AllocationConfig = {
-  team: 20,
-  advisors: 5,
+  presale: 15,
+  publicSale: 20,
+  team: 15,
   marketing: 10,
-  publicSale: 40,
-  treasury: 15,
-  ecosystem: 10,
+  development: 15,
+  reserve: 10,
+  advisory: 5,
+  ecosystem: 10
 };
 
 export const defaultVestingSchedules: VestingSchedule[] = [
-  { category: 'team', tgePercentage: 0, cliff: 6, vestingDuration: 24, vestingInterval: 'monthly' },
-  { category: 'advisors', tgePercentage: 0, cliff: 3, vestingDuration: 18, vestingInterval: 'monthly' },
-  { category: 'marketing', tgePercentage: 20, cliff: 0, vestingDuration: 12, vestingInterval: 'monthly' },
-  { category: 'publicSale', tgePercentage: 100, cliff: 0, vestingDuration: 0, vestingInterval: 'monthly' },
-  { category: 'treasury', tgePercentage: 10, cliff: 0, vestingDuration: 36, vestingInterval: 'monthly' },
-  { category: 'ecosystem', tgePercentage: 5, cliff: 3, vestingDuration: 24, vestingInterval: 'monthly' },
+  {
+    id: '1',
+    category: 'team',
+    cliffPeriod: 6,
+    vestingPeriod: 24,
+    initialUnlock: 0,
+    vestingInterval: 'monthly',
+    description: 'Team token vesting'
+  },
+  {
+    id: '2',
+    category: 'marketing',
+    cliffPeriod: 1,
+    vestingPeriod: 12,
+    initialUnlock: 10,
+    vestingInterval: 'monthly',
+    description: 'Marketing token vesting'
+  },
+  {
+    id: '3',
+    category: 'development',
+    cliffPeriod: 3,
+    vestingPeriod: 18,
+    initialUnlock: 5,
+    vestingInterval: 'monthly',
+    description: 'Development token vesting'
+  }
 ];
 
 export const defaultLaunchpadConfig: LaunchpadConfig = {
   type: 'standard',
-  launchDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // one week from now
+  launchDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
   softCap: 100000,
   hardCap: 500000,
-  minContribution: 100,
-  maxContribution: 10000,
-  fixedTokenPrice: 0.05,
-  saleAmount: 200000, 
-  saleDuration: 24,
-  minAllocation: 500,
-  maxAllocation: 5000,
-  whitelistSize: 100,
+  minContribution: 50,
+  maxContribution: 5000,
   whitelisted: false,
+  whitelistSize: 0,
+  fixedTokenPrice: 0.0005,
+  saleAmount: 10000000,
+  saleDuration: 24,
+  minAllocation: 1000,
+  maxAllocation: 10000
 };
 
-// Function to calculate price based on bonding curve
-export function calculatePrice(curve: BondingCurveConfig, supply: number): number {
-  switch (curve.type) {
-    case 'linear':
-      return curve.initialPrice + curve.slope * supply;
-    case 'exponential':
-      return curve.initialPrice * Math.exp(curve.slope * supply / 1000000);
-    case 'logarithmic':
-      return curve.initialPrice + curve.slope * Math.log(1 + supply / 1000000);
-    case 'sigmoid':
-      const midpoint = 500000; // Middle of sigmoid curve
-      return curve.initialPrice + curve.slope / (1 + Math.exp(-(supply - midpoint) / 100000));
-    case 'constant':
-    default:
-      return curve.initialPrice;
-  }
-}
-
-// Function to generate points for a bonding curve chart
-export function generateCurvePoints(curve: BondingCurveConfig, totalSupply: number): {x: number, y: number}[] {
-  const points = [];
-  const steps = 50;
-  
-  for (let i = 0; i <= steps; i++) {
-    const supply = (i / steps) * totalSupply;
-    const price = calculatePrice(curve, supply);
-    points.push({ x: supply, y: price });
-  }
-  
-  return points;
-}
-
-// Helper to validate allocation percentages (must sum to 100%)
-export function validateAllocation(allocation: AllocationConfig): boolean {
-  const sum = Object.values(allocation).reduce((acc, val) => acc + val, 0);
-  return Math.abs(sum - 100) < 0.001; // Allow for small floating point errors
-}
+export const defaultLiquidityConfig: LiquidityConfig = {
+  dex: 'pumpswap',
+  initialLiquidityPercentage: 70,
+  lockingPeriod: 180, // 180 days (6 months)
+  targetPriceRatio: 1.5,
+  enableAutoListing: true
+};

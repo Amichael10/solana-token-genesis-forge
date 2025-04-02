@@ -12,10 +12,10 @@ const LaunchPreviewPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   
-  const { tokenConfig, bondingCurve, allocation, vestingSchedules, launchpadConfig } = location.state || {};
+  const { tokenConfig, bondingCurve, allocation, vestingSchedules, launchpadConfig, liquidityConfig } = location.state || {};
   
   // If we don't have the required data, redirect back to the index page
-  if (!tokenConfig || !bondingCurve || !allocation || !vestingSchedules || !launchpadConfig) {
+  if (!tokenConfig || !bondingCurve || !allocation || !vestingSchedules || !launchpadConfig || !liquidityConfig) {
     React.useEffect(() => {
       toast({
         title: "Missing Configuration",
@@ -49,6 +49,7 @@ const LaunchPreviewPage = () => {
             allocation={allocation}
             launchpadConfig={launchpadConfig}
             vestingSchedules={vestingSchedules}
+            liquidityConfig={liquidityConfig}
           />
         </div>
         

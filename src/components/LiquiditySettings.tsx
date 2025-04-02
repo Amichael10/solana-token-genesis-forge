@@ -7,7 +7,7 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { LiquidityConfig, DexType } from '@/utils/tokenHelpers';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CircleDollarSign, LockIcon, PercentIcon, SwapIcon } from 'lucide-react';
+import { CircleDollarSign, LockIcon, PercentIcon, ArrowLeftRight } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Slider } from '@/components/ui/slider';
 
@@ -65,7 +65,7 @@ const LiquiditySettings: React.FC<LiquiditySettingsProps> = ({ liquidityConfig, 
     <Card className="glass-card purple-glow animate-fade-in">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <SwapIcon className="h-5 w-5 text-solana-purple" />
+          <ArrowLeftRight className="h-5 w-5 text-solana-purple" />
           <span>Liquidity Settings</span>
         </CardTitle>
         <CardDescription>
@@ -178,7 +178,7 @@ const LiquiditySettings: React.FC<LiquiditySettingsProps> = ({ liquidityConfig, 
           </p>
           <div className="grid grid-cols-2 gap-2 text-sm">
             <div className="flex items-center gap-2">
-              <SwapIcon className="h-4 w-4 text-solana-purple" />
+              <ArrowLeftRight className="h-4 w-4 text-solana-purple" />
               <span>{liquidityConfig.dex === 'custom' ? liquidityConfig.customDexName || 'Custom DEX' : liquidityConfig.dex}</span>
             </div>
             <div className="flex items-center gap-2">

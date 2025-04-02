@@ -24,7 +24,7 @@ import {
 } from '@/utils/tokenHelpers';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight, Rocket, Gem, Layout, Sparkles, SwapIcon } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Rocket, Gem, Layout, Sparkles, ArrowLeftRight } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();

@@ -1,91 +1,102 @@
 
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Navbar from '@/components/Navbar';
 import LaunchPreview from '@/components/LaunchPreview';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Rocket } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
+import { SidebarProvider } from '@/components/ui/sidebar';
+import AppSidebar from '@/components/AppSidebar';
 import { useToast } from '@/components/ui/use-toast';
 
 const LaunchPreviewPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  
-  const { tokenConfig, bondingCurve, allocation, vestingSchedules, launchpadConfig, liquidityConfig } = location.state || {};
-  
-  // If we don't have the required data, redirect back to the index page
-  if (!tokenConfig || !bondingCurve || !allocation || !vestingSchedules || !launchpadConfig || !liquidityConfig) {
-    React.useEffect(() => {
-      toast({
-        title: "Missing Configuration",
-        description: "Please complete all token configuration steps first.",
-        variant: "destructive"
-      });
-      navigate('/');
-    }, []);
-    
-    return null;
+
+  // Use location state to get token configuration data
+  const {
+    tokenConfig,
+    bondingCurve,
+    allocation,
+    vestingSchedules,
+    launchpadConfig,
+    liquidityConfig
+  } = location.state || {};
+
+  // Check if all required data is present
+  const hasAllData = tokenConfig && bondingCurve && allocation && vestingSchedules && launchpadConfig && liquidityConfig;
+
+  const handleLaunch = () => {
+    toast({
+      title: "Token Launch Initiated",
+      description: "Your token launch process has been started. You'll receive updates on the progress.",
+    });
+  };
+
+  if (!hasAllData) {
+    return (
+      <SidebarProvider>
+        <div className="min-h-svh w-full flex">
+          <AppSidebar />
+          <main className="flex-1 flex flex-col overflow-auto">
+            <div className="container mx-auto py-8 px-4 flex-1 flex flex-col items-center justify-center">
+              <h1 className="text-3xl font-bold mb-6">Missing Configuration Data</h1>
+              <p className="mb-8 text-muted-foreground">Please complete the token creation process before viewing the launch preview.</p>
+              <Button onClick={() => navigate('/')}>
+                <ChevronLeft className="mr-2 h-4 w-4" />
+                Return to Token Creator
+              </Button>
+            </div>
+          </main>
+        </div>
+      </SidebarProvider>
+    );
   }
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      
-      <main className="container mx-auto py-8 px-4">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="solana-gradient-text">Launch</span> Preview
-          </h1>
-          <p className="text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto">
-            Review your token configuration before launching
-          </p>
-        </div>
-        
-        <div className="max-w-4xl mx-auto mb-8">
-          <LaunchPreview 
-            tokenConfig={tokenConfig}
-            bondingCurve={bondingCurve}
-            allocation={allocation}
-            launchpadConfig={launchpadConfig}
-            vestingSchedules={vestingSchedules}
-            liquidityConfig={liquidityConfig}
-          />
-        </div>
-        
-        <div className="flex justify-center mt-8">
-          <Button 
-            variant="outline" 
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2 mr-4"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Configuration
-          </Button>
+    <SidebarProvider>
+      <div className="min-h-svh w-full flex">
+        <AppSidebar />
+        <main className="flex-1 flex flex-col overflow-auto">
+          <div className="container mx-auto py-8 px-4 flex-1">
+            <div className="mb-6 flex justify-between items-center">
+              <Button 
+                variant="outline" 
+                onClick={() => navigate('/')}
+                className="flex items-center"
+              >
+                <ChevronLeft className="mr-2 h-4 w-4" />
+                Back to Editor
+              </Button>
+              
+              <Button 
+                onClick={handleLaunch}
+                className="bg-solana-gradient text-black font-medium"
+              >
+                Launch Token
+              </Button>
+            </div>
+            
+            <h1 className="text-3xl font-bold mb-8">Launch Preview</h1>
+            
+            <LaunchPreview 
+              tokenConfig={tokenConfig}
+              bondingCurve={bondingCurve}
+              allocation={allocation}
+              vestingSchedules={vestingSchedules}
+              launchpadConfig={launchpadConfig}
+              liquidityConfig={liquidityConfig}
+            />
+          </div>
           
-          <Button 
-            variant="default"
-            className="bg-solana-gradient text-black font-medium hover:opacity-90 flex items-center gap-2"
-            onClick={() => {
-              toast({
-                title: "Token Launch Initiated",
-                description: "Your token launch process has been started."
-              });
-            }}
-          >
-            <Rocket className="h-4 w-4" />
-            Launch Token
-          </Button>
-        </div>
-      </main>
-      
-      <footer className="border-t border-white/10 py-8">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>Solana Token Genesis Forge — A token launcher demo application</p>
-          <p className="mt-2">Built with React, Tailwind CSS, and the Solana ecosystem in mind</p>
-        </div>
-      </footer>
-    </div>
+          <footer className="border-t border-white/10 py-4">
+            <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
+              <p>Built with React, Tailwind CSS, and the Solana ecosystem in mind</p>
+            </div>
+          </footer>
+        </main>
+      </div>
+    </SidebarProvider>
   );
 };
 

@@ -80,9 +80,9 @@ const Index = () => {
         <AppSidebar currentStep={currentStep} setCurrentStep={setCurrentStep} />
         
         <main className="flex-1 flex flex-col overflow-auto">
-          <div className="container mx-auto py-8 px-4 flex-1">
-            <div className="text-center mb-10">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          <div className="container mx-auto py-12 px-8 flex-1"> {/* Increased padding for better spacing */}
+            <div className="text-center mb-12"> {/* Increased margin bottom */}
+              <h1 className="text-4xl md:text-5xl font-bold mb-6"> {/* Increased margin bottom */}
                 <span className="solana-gradient-text">Solana Token</span> Genesis Forge
               </h1>
               <p className="text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto">
@@ -91,12 +91,12 @@ const Index = () => {
             </div>
             
             {/* Step Title */}
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-6">{getStepTitle()}</h2>
+            <div className="mb-10"> {/* Increased margin bottom */}
+              <h2 className="text-2xl font-bold">{getStepTitle()}</h2>
             </div>
             
             {/* Step Content */}
-            <div className="mb-8">
+            <div className="mb-12"> {/* Increased margin bottom */}
               {currentStep === 1 && (
                 <TokenForm 
                   tokenConfig={tokenConfig} 
@@ -165,8 +165,8 @@ const Index = () => {
             </div>
           </div>
           
-          <footer className="border-t border-white/10 py-4">
-            <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
+          <footer className="border-t border-white/10 py-6"> {/* Increased padding */}
+            <div className="container mx-auto px-8 text-center text-sm text-muted-foreground"> {/* Increased padding */}
               <p>Built with React, Tailwind CSS, and the Solana ecosystem in mind</p>
             </div>
           </footer>

@@ -53,16 +53,17 @@ const AppSidebar = ({ currentStep, setCurrentStep }) => {
         </div>
       </SidebarHeader>
       
-      <SidebarContent>
+      <SidebarContent className="pt-8"> {/* Added padding top to align with main content header */}
         {isPreviewRoute ? (
           <SidebarGroup>
-            <SidebarGroupLabel>Launch Preview</SidebarGroupLabel>
-            <SidebarMenu>
+            <SidebarGroupLabel className="px-4 py-2">Launch Preview</SidebarGroupLabel>
+            <SidebarMenu className="mt-3 space-y-3"> {/* Add vertical spacing between menu items */}
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
                   isActive={true}
                   tooltip="Review Launch"
+                  className="px-4 py-3" {/* Increased padding for better touch target */}
                 >
                   <a href="/launch-preview">
                     <CheckCircle className="text-solana-green" />
@@ -74,13 +75,14 @@ const AppSidebar = ({ currentStep, setCurrentStep }) => {
           </SidebarGroup>
         ) : (
           <SidebarGroup>
-            <SidebarGroupLabel>Token Configuration</SidebarGroupLabel>
-            <SidebarMenu>
+            <SidebarGroupLabel className="px-4 py-2">Token Configuration</SidebarGroupLabel>
+            <SidebarMenu className="mt-3 space-y-3"> {/* Add vertical spacing between menu items */}
               <SidebarMenuItem>
                 <SidebarMenuButton
                   tooltip="Token Basics - Configure name, symbol, and supply"
                   isActive={isIndexRoute && currentStep === 1}
                   onClick={() => setCurrentStep(1)}
+                  className="px-4 py-3" {/* Increased padding for better touch target */}
                 >
                   <Gem className={`${currentStep === 1 ? 'text-solana-green' : 'text-solana-purple'}`} />
                   <div className="flex flex-col items-start">
@@ -95,6 +97,7 @@ const AppSidebar = ({ currentStep, setCurrentStep }) => {
                   tooltip="Bonding Curve - Set token pricing model"
                   isActive={isIndexRoute && currentStep === 2}
                   onClick={() => setCurrentStep(2)}
+                  className="px-4 py-3"
                 >
                   <BarChart className={`${currentStep === 2 ? 'text-solana-green' : 'text-solana-purple'}`} />
                   <div className="flex flex-col items-start">
@@ -109,6 +112,7 @@ const AppSidebar = ({ currentStep, setCurrentStep }) => {
                   tooltip="Allocation - Distribute token supply"
                   isActive={isIndexRoute && currentStep === 3}
                   onClick={() => setCurrentStep(3)}
+                  className="px-4 py-3"
                 >
                   <Layout className={`${currentStep === 3 ? 'text-solana-green' : 'text-solana-purple'}`} />
                   <div className="flex flex-col items-start">
@@ -123,6 +127,7 @@ const AppSidebar = ({ currentStep, setCurrentStep }) => {
                   tooltip="Vesting Schedule - Lock tokens over time"
                   isActive={isIndexRoute && currentStep === 4}
                   onClick={() => setCurrentStep(4)}
+                  className="px-4 py-3"
                 >
                   <Clock className={`${currentStep === 4 ? 'text-solana-green' : 'text-solana-purple'}`} />
                   <div className="flex flex-col items-start">
@@ -137,6 +142,7 @@ const AppSidebar = ({ currentStep, setCurrentStep }) => {
                   tooltip="Liquidity - Configure swap pools"
                   isActive={isIndexRoute && currentStep === 5}
                   onClick={() => setCurrentStep(5)}
+                  className="px-4 py-3"
                 >
                   <ArrowLeftRight className={`${currentStep === 5 ? 'text-solana-green' : 'text-solana-purple'}`} />
                   <div className="flex flex-col items-start">
@@ -151,6 +157,7 @@ const AppSidebar = ({ currentStep, setCurrentStep }) => {
                   tooltip="Launchpad - Set fundraising parameters"
                   isActive={isIndexRoute && currentStep === 6}
                   onClick={() => setCurrentStep(6)}
+                  className="px-4 py-3"
                 >
                   <Rocket className={`${currentStep === 6 ? 'text-solana-green' : 'text-solana-purple'}`} />
                   <div className="flex flex-col items-start">
@@ -163,13 +170,14 @@ const AppSidebar = ({ currentStep, setCurrentStep }) => {
           </SidebarGroup>
         )}
 
-        <SidebarGroup>
-          <SidebarGroupLabel>Management</SidebarGroupLabel>
-          <SidebarMenu>
+        <SidebarGroup className="mt-8"> {/* Added top margin for separation */}
+          <SidebarGroupLabel className="px-4 py-2">Management</SidebarGroupLabel>
+          <SidebarMenu className="mt-3 space-y-3"> {/* Add vertical spacing between menu items */}
             <SidebarMenuItem>
               <SidebarMenuButton 
                 onClick={showComingSoon}
                 tooltip="Manage your tokens"
+                className="px-4 py-3"
               >
                 <CircleDollarSign className="text-muted-foreground" />
                 <div className="flex flex-col items-start">
@@ -183,6 +191,7 @@ const AppSidebar = ({ currentStep, setCurrentStep }) => {
               <SidebarMenuButton 
                 onClick={showComingSoon}
                 tooltip="Adjust app settings"
+                className="px-4 py-3"
               >
                 <Settings className="text-muted-foreground" />
                 <div className="flex flex-col items-start">
@@ -195,7 +204,7 @@ const AppSidebar = ({ currentStep, setCurrentStep }) => {
         </SidebarGroup>
       </SidebarContent>
       
-      <SidebarFooter className="border-t border-white/10 p-4">
+      <SidebarFooter className="border-t border-white/10 p-4 mt-auto">
         <div className="flex flex-col gap-2 text-xs text-muted-foreground">
           <p>Solana Token Genesis Forge</p>
           <p>A token launcher demo application</p>

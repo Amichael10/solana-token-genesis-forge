@@ -77,7 +77,7 @@ const Index = () => {
   return (
     <SidebarProvider>
       <div className="min-h-svh w-full flex">
-        <AppSidebar />
+        <AppSidebar currentStep={currentStep} setCurrentStep={setCurrentStep} />
         
         <main className="flex-1 flex flex-col overflow-auto">
           <div className="container mx-auto py-8 px-4 flex-1">
@@ -90,38 +90,9 @@ const Index = () => {
               </p>
             </div>
             
-            {/* Step Progress Indicator */}
+            {/* Step Title */}
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-6">{getStepTitle()}</h2>
-              <div className="flex justify-between items-center">
-                {[...Array(totalSteps)].map((_, index) => (
-                  <React.Fragment key={index}>
-                    <div 
-                      className={`flex items-center justify-center rounded-full h-10 w-10 cursor-pointer
-                        ${currentStep > index + 1 ? 'bg-solana-purple' : 
-                        currentStep === index + 1 ? 'bg-solana-purple/80 border border-solana-purple' : 
-                        'bg-secondary border border-white/10'}`}
-                      onClick={() => setCurrentStep(index + 1)}
-                    >
-                      <span className="text-sm font-medium">{index + 1}</span>
-                    </div>
-                    {index < totalSteps - 1 && (
-                      <div 
-                        className={`flex-1 h-1 mx-2 
-                          ${currentStep > index + 1 ? 'bg-solana-purple' : 'bg-secondary'}`}
-                      ></div>
-                    )}
-                  </React.Fragment>
-                ))}
-              </div>
-              <div className="flex justify-between mt-2 text-sm text-muted-foreground">
-                <span>Token Basics</span>
-                <span>Bonding Curve</span>
-                <span>Allocation</span>
-                <span>Vesting</span>
-                <span>Liquidity</span>
-                <span>Launchpad</span>
-              </div>
             </div>
             
             {/* Step Content */}

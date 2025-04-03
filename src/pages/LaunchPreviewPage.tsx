@@ -37,7 +37,7 @@ const LaunchPreviewPage = () => {
     return (
       <SidebarProvider>
         <div className="min-h-svh w-full flex">
-          <AppSidebar />
+          <AppSidebar currentStep={0} setCurrentStep={() => {}} />
           <main className="flex-1 flex flex-col overflow-auto">
             <div className="container mx-auto py-8 px-4 flex-1 flex flex-col items-center justify-center">
               <h1 className="text-3xl font-bold mb-6">Missing Configuration Data</h1>
@@ -56,7 +56,7 @@ const LaunchPreviewPage = () => {
   return (
     <SidebarProvider>
       <div className="min-h-svh w-full flex">
-        <AppSidebar />
+        <AppSidebar currentStep={0} setCurrentStep={() => {}} />
         <main className="flex-1 flex flex-col overflow-auto">
           <div className="container mx-auto py-8 px-4 flex-1">
             <div className="mb-6 flex justify-between items-center">

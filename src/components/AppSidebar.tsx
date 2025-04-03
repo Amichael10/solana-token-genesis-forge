@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { 
   Sidebar, 
   SidebarContent, 
@@ -25,9 +25,10 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
-const AppSidebar = () => {
+const AppSidebar = ({ currentStep, setCurrentStep }) => {
   const { toast } = useToast();
   const location = useLocation();
+  const navigate = useNavigate();
   
   const showComingSoon = () => {
     toast({
@@ -37,6 +38,7 @@ const AppSidebar = () => {
   };
 
   const isPreviewRoute = location.pathname === '/launch-preview';
+  const isIndexRoute = location.pathname === '/';
 
   return (
     <Sidebar variant="inset">
@@ -72,59 +74,89 @@ const AppSidebar = () => {
           </SidebarGroup>
         ) : (
           <SidebarGroup>
-            <SidebarGroupLabel>Form Sections</SidebarGroupLabel>
+            <SidebarGroupLabel>Token Configuration</SidebarGroupLabel>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  tooltip="Token Basics"
+                  tooltip="Token Basics - Configure name, symbol, and supply"
+                  isActive={isIndexRoute && currentStep === 1}
+                  onClick={() => setCurrentStep(1)}
                 >
-                  <Gem className="text-solana-purple" />
-                  <span>Token Basics</span>
+                  <Gem className={`${currentStep === 1 ? 'text-solana-green' : 'text-solana-purple'}`} />
+                  <div className="flex flex-col items-start">
+                    <span>Token Basics</span>
+                    <span className="text-xs text-muted-foreground">Configure name, symbol, and supply</span>
+                  </div>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  tooltip="Bonding Curve"
+                  tooltip="Bonding Curve - Set token pricing model"
+                  isActive={isIndexRoute && currentStep === 2}
+                  onClick={() => setCurrentStep(2)}
                 >
-                  <BarChart className="text-solana-purple" />
-                  <span>Bonding Curve</span>
+                  <BarChart className={`${currentStep === 2 ? 'text-solana-green' : 'text-solana-purple'}`} />
+                  <div className="flex flex-col items-start">
+                    <span>Bonding Curve</span>
+                    <span className="text-xs text-muted-foreground">Set token pricing model</span>
+                  </div>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  tooltip="Allocation"
+                  tooltip="Allocation - Distribute token supply"
+                  isActive={isIndexRoute && currentStep === 3}
+                  onClick={() => setCurrentStep(3)}
                 >
-                  <Layout className="text-solana-purple" />
-                  <span>Allocation</span>
+                  <Layout className={`${currentStep === 3 ? 'text-solana-green' : 'text-solana-purple'}`} />
+                  <div className="flex flex-col items-start">
+                    <span>Allocation</span>
+                    <span className="text-xs text-muted-foreground">Distribute token supply</span>
+                  </div>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  tooltip="Vesting Schedule"
+                  tooltip="Vesting Schedule - Lock tokens over time"
+                  isActive={isIndexRoute && currentStep === 4}
+                  onClick={() => setCurrentStep(4)}
                 >
-                  <Clock className="text-solana-purple" />
-                  <span>Vesting Schedule</span>
+                  <Clock className={`${currentStep === 4 ? 'text-solana-green' : 'text-solana-purple'}`} />
+                  <div className="flex flex-col items-start">
+                    <span>Vesting Schedule</span>
+                    <span className="text-xs text-muted-foreground">Lock tokens over time</span>
+                  </div>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  tooltip="Liquidity"
+                  tooltip="Liquidity - Configure swap pools"
+                  isActive={isIndexRoute && currentStep === 5}
+                  onClick={() => setCurrentStep(5)}
                 >
-                  <ArrowLeftRight className="text-solana-purple" />
-                  <span>Liquidity</span>
+                  <ArrowLeftRight className={`${currentStep === 5 ? 'text-solana-green' : 'text-solana-purple'}`} />
+                  <div className="flex flex-col items-start">
+                    <span>Liquidity</span>
+                    <span className="text-xs text-muted-foreground">Configure swap pools</span>
+                  </div>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  tooltip="Launchpad"
+                  tooltip="Launchpad - Set fundraising parameters"
+                  isActive={isIndexRoute && currentStep === 6}
+                  onClick={() => setCurrentStep(6)}
                 >
-                  <Rocket className="text-solana-purple" />
-                  <span>Launchpad</span>
+                  <Rocket className={`${currentStep === 6 ? 'text-solana-green' : 'text-solana-purple'}`} />
+                  <div className="flex flex-col items-start">
+                    <span>Launchpad</span>
+                    <span className="text-xs text-muted-foreground">Set fundraising parameters</span>
+                  </div>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -137,20 +169,26 @@ const AppSidebar = () => {
             <SidebarMenuItem>
               <SidebarMenuButton 
                 onClick={showComingSoon}
-                tooltip="Tokens"
+                tooltip="Manage your tokens"
               >
                 <CircleDollarSign className="text-muted-foreground" />
-                <span>Tokens</span>
+                <div className="flex flex-col items-start">
+                  <span>Tokens</span>
+                  <span className="text-xs text-muted-foreground">Manage your tokens</span>
+                </div>
               </SidebarMenuButton>
             </SidebarMenuItem>
             
             <SidebarMenuItem>
               <SidebarMenuButton 
                 onClick={showComingSoon}
-                tooltip="Settings"
+                tooltip="Adjust app settings"
               >
                 <Settings className="text-muted-foreground" />
-                <span>Settings</span>
+                <div className="flex flex-col items-start">
+                  <span>Settings</span>
+                  <span className="text-xs text-muted-foreground">Adjust app settings</span>
+                </div>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

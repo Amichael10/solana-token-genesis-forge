@@ -23,7 +23,7 @@ import {
   Settings,
   CheckCircle
 } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 const AppSidebar = ({ currentStep, setCurrentStep }) => {
   const { toast } = useToast();
@@ -63,7 +63,7 @@ const AppSidebar = ({ currentStep, setCurrentStep }) => {
                   asChild
                   isActive={true}
                   tooltip="Review Launch"
-                  className="px-4 py-3" {/* Increased padding for better touch target */}
+                  className="px-4 py-3" /* Increased padding for better touch target */
                 >
                   <a href="/launch-preview">
                     <CheckCircle className="text-solana-green" />
@@ -82,7 +82,7 @@ const AppSidebar = ({ currentStep, setCurrentStep }) => {
                   tooltip="Token Basics - Configure name, symbol, and supply"
                   isActive={isIndexRoute && currentStep === 1}
                   onClick={() => setCurrentStep(1)}
-                  className="px-4 py-3" {/* Increased padding for better touch target */}
+                  className="px-4 py-3" /* Increased padding for better touch target */
                 >
                   <Gem className={`${currentStep === 1 ? 'text-solana-green' : 'text-solana-purple'}`} />
                   <div className="flex flex-col items-start">

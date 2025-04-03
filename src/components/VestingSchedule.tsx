@@ -23,11 +23,13 @@ const VestingSchedule: React.FC<VestingScheduleProps> = ({
 
   const handleAddSchedule = () => {
     const newSchedule: VestingType = {
-      name: `Schedule ${vestingSchedules.length + 1}`,
-      allocationCategory: Object.keys(allocation)[0] as keyof AllocationConfig,
+      id: `schedule-${vestingSchedules.length + 1}`,
+      category: Object.keys(allocation)[0] as keyof AllocationConfig,
       cliffPeriod: 90, // 3 months
       vestingPeriod: 360, // 12 months
       initialUnlock: 10, // 10%
+      vestingInterval: 'monthly',
+      description: `Schedule ${vestingSchedules.length + 1}` 
     };
     onChange([...vestingSchedules, newSchedule]);
     setActiveSchedule(vestingSchedules.length);
@@ -71,7 +73,7 @@ const VestingSchedule: React.FC<VestingScheduleProps> = ({
                 onClick={() => setActiveSchedule(activeSchedule === index ? null : index)}
               >
                 <div className="flex justify-between items-center">
-                  <h3 className="font-medium">{schedule.name}</h3>
+                  <h3 className="font-medium">{schedule.description || `Schedule ${index + 1}`}</h3>
                   <Button 
                     variant="ghost" 
                     size="icon"
@@ -84,7 +86,7 @@ const VestingSchedule: React.FC<VestingScheduleProps> = ({
                   </Button>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  {schedule.allocationCategory} - {schedule.initialUnlock}% initial, {schedule.cliffPeriod} days cliff, {schedule.vestingPeriod} days total
+                  {schedule.category} - {schedule.initialUnlock}% initial, {schedule.cliffPeriod} days cliff, {schedule.vestingPeriod} days total
                 </p>
                 
                 {activeSchedule === index && (
@@ -93,16 +95,16 @@ const VestingSchedule: React.FC<VestingScheduleProps> = ({
                       <Label htmlFor={`schedule-name-${index}`}>Schedule Name</Label>
                       <Input 
                         id={`schedule-name-${index}`}
-                        value={schedule.name}
-                        onChange={(e) => handleScheduleChange(index, 'name', e.target.value)}
+                        value={schedule.description || ''}
+                        onChange={(e) => handleScheduleChange(index, 'description', e.target.value)}
                       />
                     </div>
                     
                     <div className="grid gap-2">
                       <Label htmlFor={`schedule-allocation-${index}`}>Allocation Category</Label>
                       <Select 
-                        value={schedule.allocationCategory as string}
-                        onValueChange={(value) => handleScheduleChange(index, 'allocationCategory', value)}
+                        value={schedule.category as string}
+                        onValueChange={(value) => handleScheduleChange(index, 'category', value)}
                       >
                         <SelectTrigger id={`schedule-allocation-${index}`}>
                           <SelectValue placeholder="Select allocation category" />
@@ -149,6 +151,24 @@ const VestingSchedule: React.FC<VestingScheduleProps> = ({
                         value={schedule.vestingPeriod}
                         onChange={(e) => handleScheduleChange(index, 'vestingPeriod', Number(e.target.value))}
                       />
+                    </div>
+                    
+                    <div className="grid gap-2">
+                      <Label htmlFor={`schedule-interval-${index}`}>Vesting Interval</Label>
+                      <Select 
+                        value={schedule.vestingInterval}
+                        onValueChange={(value) => handleScheduleChange(index, 'vestingInterval', value as 'daily' | 'weekly' | 'monthly' | 'quarterly')}
+                      >
+                        <SelectTrigger id={`schedule-interval-${index}`}>
+                          <SelectValue placeholder="Select vesting interval" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="daily">Daily</SelectItem>
+                          <SelectItem value="weekly">Weekly</SelectItem>
+                          <SelectItem value="monthly">Monthly</SelectItem>
+                          <SelectItem value="quarterly">Quarterly</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 )}
